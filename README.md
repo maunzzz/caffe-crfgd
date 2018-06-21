@@ -19,13 +19,7 @@ Please consider citing the following publications if it helps your research:
 	}
 
 	@InProceedings{crfgd2018,
-	  author="Larsson, M{\aa}ns
-	  and Arnab, Anurag
-	  and Kahl, Fredrik
-	  and Zheng, Shuai
-	  and Torr, Philip",
-	  editor="Pelillo, Marcello
-	  and Hancock, Edwin",
+	  author="Larsson, M{\aa}ns and Arnab, Anurag and Kahl, Fredrik and Zheng, Shuai and Torr, Philip", editor="Pelillo, Marcello and Hancock, Edwin",
 	  title="A Projected Gradient Descent Method for CRF Inference Allowing End-to-End Training of Arbitrary Pairwise Potentials",
 	  booktitle="Energy Minimization Methods in Computer Vision and Pattern Recognition",
 	  year="2018",
