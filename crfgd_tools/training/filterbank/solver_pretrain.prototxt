@@ -1,0 +1,23 @@
+net: "net_pretrain.prototxt"
+
+test_iter: 1449
+test_interval: 1464 
+
+display: 1
+
+lr_policy: "fixed"
+base_lr: 5e-13
+momentum: 0.9
+
+weight_decay: 0.0005
+
+max_iter: 240000 
+
+snapshot: 1464  # Roughly one tenth of an epoch
+snapshot_prefix: "../snapshots/filterbank_pretrain"
+
+solver_mode: GPU
+
+iter_size: 1
+
+test_initialization: true

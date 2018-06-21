@@ -1,3 +1,7 @@
+## Added for caffe-crfgd
+*.log
+models/snapshots/*
+
 ## General
 
 # Compiled Object files

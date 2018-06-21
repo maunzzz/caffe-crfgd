@@ -420,6 +420,252 @@ message LayerParameter {
   optional ThresholdParameter threshold_param = 128;
   optional TileParameter tile_param = 138;
   optional WindowDataParameter window_data_param = 129;
+
+  // ADDED
+  optional ImageLabelDataParameter image_label_data_param = 1000;
+  optional IOUAccuracyParameter iou_accuracy_param = 1001;  
+  optional PixelFeatureParameter pixel_feature_param = 1002;
+  optional PermutohedralParameter permutohedral_param = 1003;
+  optional CrfEdParameter crfed_param = 1004;
+  optional CrfGradParameter crfgrad_param = 1005;
+  optional InterpParameter interp_param = 1006;  
+  optional ImageLabelEdgeDataParameter image_label_edge_data_param = 1007;  
+  optional CrfFilterbankEdParameter crffilterbanked_param = 1008;
+}
+
+// Message that stores parameters used by crfgd_deepdim_ed layer
+message CrfFilterbankEdParameter {
+  optional float num_iterations = 1 [default = 5];
+  optional float step_size_factor = 2 [default = 1];
+  optional float log_eps = 3 [default = 0.1];
+  optional uint32 kernel_size = 4 [default = 9];// The kernel size for the filters
+  optional bool debug_mode = 5 [default = false]; //if true: initializes pairwise weights to nonzero vals
+  optional float unary_weight_init = 6 [default = 0.1]; // value of unary weight on initialization
+  optional bool use_cudnn = 7 [default = true]; // if true, uses cudnn layer, if false uses normal conv layer
+  optional float div_epsilon = 8 [default = 0]; //variable to avoid numerical instabilities (in some cases 0 works fine)
+  optional bool no_redundancy_weights = 9 [default = false];
+  optional bool init_filters = 10 [default = false];
+  optional bool skip_pw_term = 11 [default = false];
+  optional bool keep_mid_ind_zero = 12 [default = true];
+}
+
+message InterpParameter {
+  optional int32 height = 1 [default = 0]; // Height of output
+  optional int32 width = 2 [default = 0]; // Width of output
+  optional int32 zoom_factor = 3 [default = 1]; // zoom factor
+  optional int32 shrink_factor = 4 [default = 1]; // shrink factor
+  optional int32 pad_beg = 5 [default = 0]; // padding at begin of input
+  optional int32 pad_end = 6 [default = 0]; // padding at end of input
+}
+
+message IOUAccuracyParameter {
+
+  // If specified, ignore instances with the given label.
+  optional int32 ignore_label = 1 [default = 255];
+
+  // If true, normalize each batch across all instances (including spatial
+  // dimesions, but not ignored instances); else, divide by batch size only.
+  optional bool normalize = 2 [default = true];
+
+  required uint32 test_iterations = 3;
+}
+
+message Slice {
+  repeated uint32 dim = 1;
+  repeated uint32 stride = 2;
+  repeated uint32 offset = 3;
+}
+
+message ImageLabelDataParameter {
+  // Specify the data source.
+  optional string image_list_path = 1;
+  optional string label_list_path = 2;
+  // Specify the batch size.
+  optional uint32 batch_size = 3 [default = 1];
+  // The rand_skip variable is for the data layer to skip a few data points
+  // to avoid all asynchronous sgd clients to start at the same point. The skip
+  // point would be set as rand_skip * rand(0,1). Note that rand_skip should not
+  // be larger than the number of images in the file list.
+  optional uint32 rand_skip = 4 [default = 0];
+  // Whether or not ImageLayer should shuffle the list of files at every epoch.
+  optional bool shuffle = 5 [default = false];
+
+  // Whether random sample image scales
+  optional bool rand_scale = 6 [default = false];
+  optional float min_scale = 7  [default = 1];
+  optional float max_scale = 8  [default = 1];
+
+  optional string data_dir = 9 [default = ""];
+
+  optional Slice label_slice = 10;
+
+  optional string image_dir = 11 [default = ""];
+  optional string label_dir = 12 [default = ""];
+
+  enum Padding {
+    ZERO = 0;
+    REFLECT = 1;
+  }
+
+  optional Padding padding = 13 [default = REFLECT];
+
+  optional bool hsv_noise = 14 [default = false];
+  optional uint32 h_noise = 15 [default = 0];
+  optional uint32 s_noise = 16 [default = 0];
+  optional uint32 v_noise = 17 [default = 0];
+
+  optional bool pad_centre = 18 [default = true];
+}
+
+message ImageLabelEdgeDataParameter {
+  // Specify the data source.
+  optional string image_list_path = 1;
+  optional string label1_list_path = 2;
+  optional string label2_list_path = 3; // edge labels
+  optional string label3_list_path = 4;
+  optional string label4_list_path = 5;
+  // Specify the batch size.
+  optional uint32 batch_size = 6 [default = 1];
+  // The rand_skip variable is for the data layer to skip a few data points
+  // to avoid all asynchronous sgd clients to start at the same point. The skip
+  // point would be set as rand_skip * rand(0,1). Note that rand_skip should not
+  // be larger than the number of images in the file list.
+  optional uint32 rand_skip = 7 [default = 0];
+  // Whether or not ImageLayer should shuffle the list of files at every epoch.
+  optional bool shuffle = 8 [default = false];
+
+  // Whether random sample image scales
+  optional bool rand_scale = 9 [default = false];
+  optional float min_scale = 10  [default = 1];
+  optional float max_scale = 11  [default = 1];
+
+  optional string data_dir = 12 [default = ""];
+
+  optional Slice label_slice = 13;
+
+  optional string image_dir = 14 [default = ""];
+  optional string label1_dir = 15 [default = ""];
+  optional string label2_dir = 16 [default = ""];
+  optional string label3_dir = 17 [default = ""];
+  optional string label4_dir = 18 [default = ""];
+
+  enum Padding {
+    ZERO = 0;
+    REFLECT = 1;
+  }
+
+  optional Padding padding = 19 [default = REFLECT];
+
+  optional bool hsv_noise = 20 [default = false];
+  optional uint32 h_noise = 21 [default = 0];
+  optional uint32 s_noise = 22 [default = 0];
+  optional uint32 v_noise = 23 [default = 0];
+
+  optional bool pad_centre = 24 [default = true];
+}
+
+// Message that stores parameters used by ggdrpl layer
+message CrfGradParameter {
+  optional float leak_factor = 1 [default = 0.5];
+  optional float num_iterations = 2 [default = 5];
+  optional float step_size = 3 [default = 0.1];
+  optional float log_eps = 4 [default = 0.1];
+  optional uint32 kernel_size = 5 [default = 9];// The kernel size
+  required uint32 num_classes = 6 [default = 2];//number of classes for segmentation task (defines number of input and output channels)
+  optional bool debug_mode = 7 [default = false]; //if true: initializes pairwise weights to 0.1 instead of 0
+  optional float pl_filter_init_scale = 8 [default = 0.1]; // The sparse pl filter will be initialized with a gaussian filter scaled by this parameter
+  optional float unary_weight_init = 9 [default = 0.1]; // The sparse pl filter will be initialized with a gaussian filter scaled by this parameter
+  optional bool use_cudnn = 10 [default = true]; // if true, uses cudnn layer, if false uses normal conv layer
+  optional bool calculate_energy = 11 [default = false];
+}
+
+// Message that stores parameters used by CrfEdLayer layer
+message CrfEdParameter {
+  optional float num_iterations = 1 [default = 5];
+  optional float step_size_factor = 2 [default = 1];
+  optional float log_eps = 3 [default = 0.1];
+  optional uint32 kernel_size = 4 [default = 9]; // The kernel size
+  required uint32 num_classes = 5 [default = 2]; //number of classes for segmentation task (defines number of input and output channels)
+  optional bool debug_mode = 6 [default = false]; //if true: initializes pairwise weights to 0.1 instead of 0
+  optional float pl_filter_init_scale = 7 [default = 0.1]; // The sparse pl filter will be initialized with a gaussian filter scaled by this parameter
+  optional float unary_weight_init = 8 [default = 0.1]; // The sparse pl filter will be initialized with a gaussian filter scaled by this parameter
+  optional bool use_cudnn = 9 [default = true]; // if true, uses cudnn layer, if false uses normal conv layer
+  optional bool calculate_energy = 10 [default = false];
+  optional float clip_pl_gradients = 13 [default = -1]; // set to negative if no clipping  
+  optional bool skip_pl_term = 14 [default = false];
+  optional bool skip_conv_term = 15 [default = false];
+  optional float div_epsilon = 16 [default = 0]; //variable to avoid numerical instabilities (in some cases 0 works fine)
+  optional float spatial_filter_init_weight = 17 [default = 0.0];
+}
+
+// Message that stores parameters used by PermutohedralLayer
+message PermutohedralParameter {
+  // The number of outputs for the layer.
+  optional uint32 num_output = 1;
+  // Defines the size of the filter in permutohedral space. Think of
+  // it as the size of a side of a squared convolutional filter.
+  optional uint32 neighborhood_size = 2;
+  // Filler used for the initial filter.
+  optional FillerParameter filter_filler = 3;
+  // Set this if you want that permutohedral blurs are initialized
+  // every forward step.
+  optional bool repeated_init = 4 [default = true];
+  optional uint32 group = 7 [default = 1];
+
+  // Bias term.
+  optional bool bias_term = 5 [default = false];
+  optional FillerParameter bias_filler = 6;
+
+  //Normalization norm_type:
+  // AFTER:     Normalize after filtering.
+  // SYMMETRIC: Normalize before and after filtering.
+  enum NormType {
+    AFTER = 0;
+    SYMMETRIC = 1;
+  }
+  optional NormType norm_type = 8 [default = SYMMETRIC];
+
+  //offset_type: FULL to use full Guassian offset.
+  //offset_type: DIAG to use diagonal offset.
+  //Use diagonal Gaussian option only when number of groups == 1
+  enum OffsetType {
+    FULL = 0;
+    DIAG = 1;
+    NONE = 2;
+  }
+  optional OffsetType offset_type = 9 [default = FULL];
+
+  // Whether to do filter visualization
+  // This option (true) will make barycetric weights uniform and
+  // output will be same for each lattice simplex points
+  optional bool visualize_lattice = 10 [default = false];
+
+  //Whether to skip filtering step. If true, only splat and
+  //slice operations will be performed in this layer
+  optional bool do_skip_blur = 11 [default = false];
+}
+
+// Message that stores parameters used by PixelFeatureLayer
+message PixelFeatureParameter {
+  enum Feature {
+    POSITION = 0;
+    POSITION_AND_RGB = 1;
+    RGB_AND_POSITION = 2;
+    RGB = 3;
+    RANDOM_POSITION = 4;
+    WARPED_POSITION = 5;
+    NUM_RANDOM_POSITION = 6;
+    RANDOM_ROTATE = 7;
+  }
+
+  optional Feature type = 1 [default = POSITION];
+  optional float rotation_angle = 2 [default = 0];
+  optional float pos_scale = 3 [default = 1];
+  optional float rotation_sigma = 4 [default = 1];
+  optional uint32 num_random_pos = 5;
+  optional float offset_h = 6 [default = 0];
+  optional float offset_w = 7 [default = 0];
+  optional float color_scale = 8 [default = 1];
 }
 
 // Message that stores parameters used to apply transformation

@@ -77,6 +77,41 @@ class BasePrefetchingDataLayer :
   Blob<Dtype> transformed_data_;
 };
 
+template <typename Dtype>
+class Batch4 {
+ public:
+  Blob<Dtype> data_, label1_, label2_, label3_ , label4_;
+};
+
+template <typename Dtype>
+class BasePrefetchingData4Layer :
+    public BaseDataLayer<Dtype>, public InternalThread {
+ public:
+  explicit BasePrefetchingData4Layer(const LayerParameter& param);
+  // LayerSetUp: implements common data layer setup functionality, and calls
+  // DataLayerSetUp to do special data layer setup for individual layer types.
+  // This method may not be overridden.
+  void LayerSetUp(const vector<Blob<Dtype>*>& bottom,
+      const vector<Blob<Dtype>*>& top);
+
+  virtual void Forward_cpu(const vector<Blob<Dtype>*>& bottom,
+      const vector<Blob<Dtype>*>& top);
+  virtual void Forward_gpu(const vector<Blob<Dtype>*>& bottom,
+      const vector<Blob<Dtype>*>& top);
+
+ protected:
+  virtual void InternalThreadEntry();
+  virtual void load_batch(Batch4<Dtype>* batch) = 0;
+
+  vector<shared_ptr<Batch4<Dtype> > > prefetch_;
+  BlockingQueue<Batch4<Dtype>*> prefetch_free_;
+  BlockingQueue<Batch4<Dtype>*> prefetch_full_;
+  Batch4<Dtype>* prefetch_current_;
+
+  Blob<Dtype> transformed_data_;
+};
+
+
 }  // namespace caffe
 
 #endif  // CAFFE_DATA_LAYERS_HPP_
