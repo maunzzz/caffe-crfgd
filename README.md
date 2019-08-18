@@ -19,14 +19,14 @@ Please consider citing the following publications if it helps your research:
 	}
 	
 	@article{larsson2018revisiting,
-  		title={Revisiting Deep Structured Models for Pixel-Level Labeling with Gradient-Based Inference},
-  		author={Larsson, M{\aa}ns and Arnab, Anurag and Zheng, Shuai and Torr, Philip and Kahl, Fredrik},
-  		journal={SIAM Journal on Imaging Sciences},
-  		volume={11},
-  		number={4},
-  		pages={2610--2628},
-  		year={2018},
-  		publisher={SIAM}
+  	  title={Revisiting Deep Structured Models for Pixel-Level Labeling with Gradient-Based Inference},
+  	  author={Larsson, M{\aa}ns and Arnab, Anurag and Zheng, Shuai and Torr, Philip and Kahl, Fredrik},
+  	  journal={SIAM Journal on Imaging Sciences},
+  	  volume={11},
+  	  number={4},
+  	  pages={2610--2628},
+  	  year={2018},
+  	  publisher={SIAM}
 	}
 
 	@InProceedings{crfgd2018,
